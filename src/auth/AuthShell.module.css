@@ -1,0 +1,205 @@
+/*
+ * Shared shell for all three auth states.
+ *
+ * Figma frame: 1440 x 903.
+ *   grey panel .............. x 704 -> 1440   (736 wide)
+ *   mini-form (the anchor) .. x 760 -> 1384   (624 wide, inset 56 in the panel)
+ *   auth column ............. x 200 -> 592    (168 left of the anchor)
+ *   logo .................... x 40,  y 32
+ *   Terms / Privacy ......... x 40,  y 850
+ *
+ * The anchor is the mini-form's left edge, and what Figma holds constant across
+ * the three states is the auth column's LEFT edge, 560px to its left. The
+ * column is pushed off the white zone's right edge by
+ * `--col-anchor-offset` - its own width, and the stage is centred in the panel,
+ * so both the 560px offset and the panel's 56px inset fall out of the layout
+ * rather than being hard-coded.
+ */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background: var(--c-page);
+  /* Clips the panel's ultrawide bleed at the viewport edge — see .panel::after. */
+  overflow: clip;
+}
+
+/*
+ * The composition. The regular content in it stays well inside the 1200px cap
+ * (the white zone is 704 at most); the presentation panel is exempt and its
+ * colour bleeds past the composition on ultrawide.
+ */
+.shell {
+  display: flex;
+  width: 100%;
+  max-width: calc(var(--zone-w) + var(--panel-w)); /* 1440 */
+}
+
+/* ---- White zone: logo, auth column, footer ----------------------------- */
+
+.zone {
+  flex: 1 1 var(--zone-w);
+  /* 40 (logo inset) + 504 (column left edge -> zone right edge). Independent of
+     which state is showing, since a wider column just eats into its own gap. */
+  min-width: calc(var(--zone-pad-inline-start) + var(--col-anchor-offset));
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: var(--zone-pad-top) 0 var(--zone-pad-bottom);
+}
+
+.zoneHeader,
+.zoneFooter {
+  flex: 0 0 auto;
+  padding-inline-start: var(--zone-pad-inline-start);
+}
+
+.zoneMain {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-end;
+  /*
+   * Figma centres the column on the frame (y 451.5). The bands above (66px) and
+   * below (53px) are uneven, so 13px of tail padding puts the optical centre
+   * back where the design has it.
+   */
+  padding-block-end: 13px;
+}
+
+/* `margin: auto` rather than `align-items: center`, so a column taller than the
+   viewport scrolls instead of being clipped at the top. */
+.zoneMain > * {
+  margin-block: auto;
+}
+
+/* ---- Logo -------------------------------------------------------------- */
+
+.wordmark {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 1px;
+  font-family: var(--font-brand);
+  font-weight: 800;
+  font-size: 25px;
+  line-height: 34px;
+  color: #000000;
+}
+
+.wordmarkDot {
+  width: 9px;
+  height: 9px;
+  margin-block-start: 2px;
+}
+
+/* ---- Footer ------------------------------------------------------------ */
+
+.zoneFooter {
+  display: flex;
+  gap: 20px;
+}
+
+.footerLink {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 18.75px;
+  color: var(--c-text-subtle);
+  text-decoration: none;
+  border-radius: var(--r-control);
+  padding-inline: 4px;
+  margin-inline: -4px;
+  transition: background-color var(--dur-micro) var(--ease-out);
+}
+
+.footerLink:hover {
+  background-color: var(--c-hover-neutral);
+}
+
+.footerLink:focus-visible {
+  outline: 1px solid var(--c-accent);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 4px var(--c-focus-ring);
+}
+
+/* ---- Grey presentation panel ------------------------------------------ */
+
+/*
+ * `flex: 0 0` down to 1280: the white zone's slack — the 160px of empty space
+ * between the logo inset and the column — is spent first, so the panel and the
+ * whole right-hand composition stay pixel-exact. Only below 1280 (see the media
+ * query) is the panel allowed to give.
+ */
+.panel {
+  flex: 0 0 var(--panel-w);
+  min-width: calc(var(--stage-min-w) + var(--panel-gutter) * 2);
+  position: relative;
+  background: var(--c-panel);
+}
+
+/*
+ * On ultrawide the composition stays centred and the panel colour — only the
+ * colour — runs to the viewport's right edge. The stage keeps its own centring
+ * inside the 736px panel, so it never drifts.
+ */
+.panel::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 100%;
+  width: 100vw;
+  background: var(--c-panel);
+  pointer-events: none;
+}
+
+.panelInner {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  /*
+   * 55px top / 34px bottom puts the centre of the stage at y 462 in the 903
+   * frame, where Figma places the scene block (card top 316 -> caption bottom
+   * 608). The inline gutter is only a floor — the real 56px inset comes from
+   * centring a 624px stage in the 736px panel.
+   */
+  padding: 55px var(--panel-gutter) var(--zone-pad-bottom);
+}
+
+/* ---- Responsive -------------------------------------------------------- */
+
+/*
+ * Breakpoints come from the content, not from a device table.
+ *
+ * >= 1440  full Figma geometry: 704 + 736, column left edge 560px from the
+ *          anchor.
+ * 1280     the white zone has spent all its slack — the 200px left offset has
+ *          shrunk to the 40px logo inset — and the panel is still untouched, so
+ *          the whole right-hand composition is still pixel-exact here.
+ * 1120     the panel reaches its floor (a 528px card plus 24px gutters). This is
+ *          the last width that still holds the design's proportions.
+ * 1008     everything is at its floor. Below this the composition cannot hold;
+ *          1024-class widths are covered, narrower ones are out of scope.
+ *
+ * Height is handled by flow, not breakpoints: both columns centre with
+ * `margin: auto`, so a viewport shorter than the content scrolls vertically
+ * instead of clipping.
+ */
+@media (max-width: 1279px) {
+  .panel {
+    flex-shrink: 1;
+  }
+}
+
+@media (max-width: 1119px) {
+  /* Last of the slack: the column's own trailing gap closes from 112px to
+     32px. Still whitespace only — no content is dropped or rescaled. */
+  .zone {
+    --col-anchor-offset: calc(var(--col-w-wide) + 32px);
+    min-width: var(--col-anchor-offset);
+  }
+
+  .zoneHeader,
+  .zoneFooter {
+    padding-inline-start: 24px;
+  }
+}

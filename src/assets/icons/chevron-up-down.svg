@@ -1,0 +1,11 @@
+<!--
+  Country dropdown chevron. In Figma this is an SF Symbol
+  (`chevron.up.chevron.down`) sitting in a TEXT node, node 20544:1428 — it has
+  no vector data to export, so it is reconstructed here from the rendered glyph
+  (11 x 16, medium grey, rounded joins). Replace with the real asset if the
+  symbol is ever outlined in Figma.
+-->
+<svg width="11" height="16" viewBox="0 0 11 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M1.2 6.2L5.5 1.9L9.8 6.2" stroke="#A3A3AE" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M1.2 9.8L5.5 14.1L9.8 9.8" stroke="#A3A3AE" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

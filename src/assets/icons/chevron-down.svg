@@ -1,0 +1,9 @@
+<!--
+  Phone country-code chevron. In Figma this is an SF Symbol (`chevron.down`) in
+  a TEXT node inside 20544:1402 — no vector data to export, so it is
+  reconstructed here from the rendered glyph. Replace with the real asset if
+  the symbol is ever outlined in Figma.
+-->
+<svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M1.1 1.4L6 6L10.9 1.4" stroke="#A3A3AE" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

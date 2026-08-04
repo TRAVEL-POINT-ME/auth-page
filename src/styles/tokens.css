@@ -1,0 +1,152 @@
+/*
+ * Design tokens extracted from the three auth nodes in
+ * "Travel Point — Hotels (Copy)":
+ *   sign in 20522:347382 · sign up 20544:1183 · 2FA 20544:346847
+ *
+ * Nothing here comes from the wider project library — only from those nodes
+ * (raw values, plus the Figma variables those nodes actually bind).
+ */
+
+:root {
+  /* ---- Colour: page ---------------------------------------------------- */
+  --c-page: #ffffff;
+  --c-panel: #f2f2f5; /* right-hand presentation panel background */
+
+  /* ---- Colour: text ---------------------------------------------------- */
+  --c-text-strong: #0b0b0f; /* headings, primary button fill */
+  --c-text-muted: #6b6b76; /* body copy, labels */
+  --c-text-subtle: #a3a3ae; /* placeholders, footer links */
+  --c-text-inverse: #ffffff; /* Figma variable: Labels/Primary */
+  --c-text-resend: #9b96a4; /* 2FA "Resend in 41s" */
+
+  /* ---- Colour: accent -------------------------------------------------- */
+  --c-accent: #6a4ce2; /* "professionals", links, focus border */
+  --c-accent-period: #635bff; /* the full stop after "professionals" */
+  --c-accent-strong: #6e48c6; /* Figma variable: Purple/Purple 600 — "Change" */
+  --c-accent-indicator: #5d35b2; /* Figma variable: Purple/Purple 700 */
+  --c-accent-soft: #9a7ae3; /* destination field border */
+
+  /* ---- Colour: neutrals bound to Figma variables ----------------------- */
+  --c-neutral-900: #0d0122;
+  --c-neutral-600: #625c6c;
+  --c-neutral-500: #7b7585;
+  --c-neutral-250: #e0dce6;
+  --c-neutral-200: #e6e3eb;
+  --c-neutral-150: #ece9f0;
+  --c-neutral-white: #ffffff;
+
+  /* ---- Colour: purple tints (filter chips, "Breakfast included") -------- */
+  --c-purple-100: #f1ecfe; /* Figma variable: Purple/Purple 100 */
+  --c-purple-800: #4b2a90; /* Figma variable: Purple/Purple 800 */
+
+  /*
+   * ---- Colour: demo cards (scenes 2-5) ---------------------------------
+   * The four backstage/result cards are set in their own greyscale — they are
+   * a product screenshot, not part of the auth chrome, so they do not reuse
+   * the neutral ramp above.
+   */
+  --c-demo-label: #999999; /* every 12px caption in scenes 2-5 */
+  --c-demo-body: #6b6b72; /* 14px body next to a price */
+  --c-demo-address: #646464; /* property address, avatar initials */
+  --c-demo-hairline: rgba(187, 187, 187, 0.3); /* row dividers */
+  --c-demo-axis: rgba(187, 187, 187, 0.4); /* scene 2 axis line */
+  --c-demo-dot: #d9d9d9; /* scene 2 losing quotes */
+  --c-demo-star: #e0a126; /* property rating stars */
+  --c-demo-chat-in: #fafafa; /* inbound bubble fill */
+  --c-demo-chat-in-text: #333333;
+  --c-demo-avatar: #ededed;
+
+  /* ---- Colour: green (the "you win" colour of the demo) ---------------- */
+  --c-green: #0f8a5f; /* best rate, markup, margin */
+  --c-green-bright: #08a85b; /* "Confirmed" status */
+  --c-green-soft: #e7f4ee; /* "Free cancellation" pill */
+  --c-green-tint: #f1fbf7; /* scene 4 total block */
+  --c-green-veil: rgba(8, 168, 91, 0.12); /* status card check disc */
+
+  /* ---- Colour: surfaces & lines ---------------------------------------- */
+  --c-border: #e9e9ee; /* dividers, Google button border */
+  --c-field: #f6f6f8; /* input fill (sign in / sign up) */
+  --c-field-alt: #f7f5f8; /* input fill (2FA) */
+  --c-focus-ring: rgba(225, 225, 227, 0.3);
+
+  /* Hover reveal — the lightest neutral surface in the design. */
+  --c-hover-neutral: #f6f6f8;
+  --c-hover-veil: rgba(255, 255, 255, 0.14); /* same reveal, over a dark fill */
+
+  /* ---- Typography ------------------------------------------------------ */
+  --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-brand: 'Nunito', 'Inter', system-ui, sans-serif;
+  /*
+   * The mini-form is set in e-Ukraine, which is not served by Google Fonts.
+   * Drop the web-font files in and @font-face them; until then it falls back
+   * to Inter, which is metrically close enough not to reflow the card.
+   */
+  --font-stage: 'e-Ukraine', 'Inter', system-ui, sans-serif;
+  /* Every price in scenes 2-5 is set in mono, so the figures line up. */
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* ---- Radii ----------------------------------------------------------- */
+  --r-control: 8px; /* Figma variable: 1x */
+  --r-pill: 6px; /* status pills, property thumbnail */
+  --r-bubble-tail: 6px; /* the clipped corner of a chat bubble */
+  --r-bubble: 12px; /* chat bubbles, status card, scene 4 total block */
+  --r-field: 14px;
+  --r-field-lg: 15px;
+  --r-card: 16px; /* Figma variable: 2x */
+  --r-demo-card: 20px; /* the scene 2-5 cards */
+  --r-round: 999px;
+
+  /* ---- Shadow ---------------------------------------------------------- */
+  /* Figma style "Cards/Default" */
+  --shadow-card: 0 4px 6px 4px rgba(13, 1, 34, 0.02);
+  /* The scene 2-5 cards: one soft ramp, doubling at each step. */
+  --shadow-demo-card: 0 0 0 rgba(0, 0, 0, 0.04), 0 1px 0.5px rgba(0, 0, 0, 0.02),
+    0 3px 1.5px rgba(0, 0, 0, 0.02), 0 6px 3px rgba(0, 0, 0, 0.02),
+    0 12px 6px rgba(0, 0, 0, 0.02), 0 24px 12px rgba(0, 0, 0, 0.02);
+  /* The scene 5 confirmation card, which sits on top of the demo card. */
+  --shadow-status-card: 0 1px 0.5px rgba(0, 0, 0, 0.03),
+    0 3px 1.5px rgba(0, 0, 0, 0.03), 0 6px 3px rgba(0, 0, 0, 0.03),
+    0 12px 6px rgba(0, 0, 0, 0.03), 0 24px 12px rgba(0, 0, 0, 0.03);
+
+  /* ---- Motion ---------------------------------------------------------- */
+  /*
+   * Only the two tokens the auth column itself uses live here. The stage's
+   * motion tokens are declared once in stage/motion.ts and written onto
+   * `[data-stage]` as custom properties, so the timings the timeline schedules
+   * in JS and the durations CSS transitions on can never drift apart.
+   */
+  --dur-micro: 180ms;
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+  /* ---- Composition ----------------------------------------------------- */
+  /*
+   * Figma frame is 1440 x 903. The grey panel runs 704 -> 1440 (736 wide) and
+   * the mini-form runs 760 -> 1384 (624 wide), i.e. inset 56px on both sides:
+   * the presentation area is centred inside the panel. That 760 is the
+   * composition anchor everything else is measured from.
+   */
+  --frame-h: 903px;
+  --panel-w: 736px;
+  --panel-inset: 56px; /* (736 - 624) / 2 — emergent, see AuthShell.module.css */
+  --panel-gutter: 24px; /* floor for that inset once the panel has to narrow */
+  --stage-w: 624px; /* widest scene card (scene 1) */
+  --demo-card-w: 560px; /* scenes 2-5, which are narrower than the form */
+  --stage-min-w: 528px; /* narrowest the card's own content allows */
+  --stage-h: 524px; /* tallest scene measured across scenes 1-5 (scene 5) */
+
+  --zone-w: 704px; /* white zone: frame left edge -> panel */
+  --zone-pad-inline-start: 40px; /* logo & footer inset */
+  --zone-pad-top: 32px; /* logo top */
+  --zone-pad-bottom: 34px; /* 903 - 850 - 19 (footer height) */
+
+  /*
+   * All three states start their column at x 200, i.e. 560px left of the
+   * anchor — that left edge, not the right one, is what Figma holds constant
+   * (the sign-up column is 8px wider and eats into the gap). Measured from the
+   * white zone's right edge that is 560 - 56 = 504px.
+   */
+  --col-anchor-offset: 504px;
+  --col-w: 392px; /* sign in / 2FA column */
+  --col-w-wide: 400px; /* sign up column */
+}

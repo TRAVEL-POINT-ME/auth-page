@@ -1,0 +1,138 @@
+/*
+ * Scene 3 — the result card.
+ *
+ * The divider is on the property block rather than on the price line, so it is
+ * still drawn while the price is waiting to be revealed. That is the rule for
+ * every card in the demo: the frame is static, only the contents arrive.
+ */
+
+.card {
+  composes: card from './sceneCard.module.css';
+}
+
+.kicker {
+  composes: kicker from './sceneCard.module.css';
+}
+
+.captionBlock {
+  composes: captionBlock from './sceneCard.module.css';
+}
+
+.caption {
+  composes: caption from './sceneCard.module.css';
+}
+
+.captionNote {
+  composes: captionNote from './sceneCard.module.css';
+}
+
+/* ---- Property ---------------------------------------------------------- */
+
+.property {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-block-start: 16px;
+  padding-block-end: 20px;
+  border-block-end: 1px solid var(--c-demo-hairline);
+}
+
+.photo {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--r-pill);
+  object-fit: cover;
+}
+
+.details {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 20.4px;
+  color: #000000;
+}
+
+.stars {
+  margin-block-start: 8px;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 12px;
+  color: var(--c-demo-star);
+}
+
+.address {
+  margin-block-start: 8px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16.8px;
+  color: var(--c-demo-address);
+}
+
+/* ---- Status pills ------------------------------------------------------ */
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block-start: 6px;
+}
+
+.pillGreen,
+.pillPurple {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 4px;
+  border-radius: var(--r-pill);
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.pillGreen {
+  padding-inline: 6px;
+  background: var(--c-green-soft);
+  color: var(--c-green);
+}
+
+.pillPurple {
+  padding-inline: 9px;
+  background: var(--c-purple-100);
+  color: var(--c-purple-800);
+}
+
+/* ---- Total ------------------------------------------------------------- */
+
+.total {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-block-start: 20px;
+}
+
+.totalLabel {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16.8px;
+  color: var(--c-demo-body);
+}
+
+/*
+ * The same figure, in the same mono face and at the same size, as the label
+ * that was sitting over the winning dot a beat ago — so it reads as that
+ * number arriving rather than as a new one.
+ */
+.totalValue {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 25.2px;
+  color: #000000;
+  white-space: nowrap;
+}

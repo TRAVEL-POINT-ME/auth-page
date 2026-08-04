@@ -1,0 +1,218 @@
+/*
+ * Every animated state in the demo, in one file.
+ *
+ * The scene modules describe how the cards look; this file describes how they
+ * arrive. It is keyed entirely on the `data-*` hooks the timeline drives, so
+ * the two never have to agree on a class name — the timeline only ever adds or
+ * removes `is-in` / `is-active` / `is-on`.
+ *
+ * Only `opacity` and `transform` are animated anywhere below. Nothing here
+ * transitions `height`, `width`, `top`, `left`, `margin` or `padding`, which is
+ * what lets the stage keep a fixed height while its contents change.
+ *
+ * The durations come from `--dur-*`, which `stage/motion.ts` writes onto
+ * `[data-stage]`.
+ */
+
+/* ---- Scenes ------------------------------------------------------------- */
+
+/*
+ * Enter and exit overlap: the outgoing scene is still fading while the
+ * incoming one is already fading in, both over `--dur-scene`.
+ */
+[data-scene] {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition:
+    opacity var(--dur-scene) var(--ease-out),
+    transform var(--dur-scene) var(--ease-out);
+}
+
+[data-scene].is-active {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Generic sequential reveal ------------------------------------------ */
+
+/*
+ * `data-reveal` is the ordered mechanism: the runner walks the indices in a
+ * scene and reveals them one after another. `data-fade` is the same treatment
+ * for the handful of elements a scene's own beat sheet times by hand.
+ */
+[data-reveal],
+[data-fade] {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity var(--dur-reveal) var(--ease-out),
+    transform var(--dur-reveal) var(--ease-out);
+}
+
+[data-reveal].is-in,
+[data-fade].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Scene 1: fields, caret, chips, submit ------------------------------ */
+
+[data-field] {
+  transition: border-color var(--dur-micro) var(--ease-out);
+}
+
+/*
+ * The caret sits before the value while the field is empty and after it once
+ * there is something to type past — the position a real caret would take, with
+ * no animated `left` involved.
+ */
+[data-caret] {
+  opacity: 0;
+}
+
+[data-caret].is-on {
+  animation: stage-caret 1s step-end infinite;
+}
+
+[data-caret]:has(+ [data-field-value]:not([data-empty])) {
+  order: 1;
+}
+
+@keyframes stage-caret {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+[data-chip-select] {
+  transition:
+    background-color var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out);
+}
+
+[data-submit] {
+  transition: transform var(--dur-micro) var(--ease-out);
+}
+
+[data-submit].is-pressed {
+  transform: scale(0.94);
+}
+
+/* ---- Scene 2: quote dots and the convergence ---------------------------- */
+
+/*
+ * A dot arrives by falling the last 12px into place. Opacity and transform run
+ * at different lengths on purpose: the dot is fully visible before it has
+ * finished settling.
+ */
+[data-quote] {
+  opacity: 0;
+  transform: translateY(-12px);
+  transition:
+    opacity var(--dur-reveal) var(--ease-out),
+    background-color var(--dur-reveal) var(--ease-out),
+    transform var(--dur-land) var(--ease-land);
+}
+
+[data-quote].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * Once every quote is on the axis, all but the winner recede and the winner
+ * takes the accent — larger and filled. "Larger" is a scale rather than a size
+ * change, so the dot grows about its own centre and no layout is touched.
+ */
+[data-quote].is-dimmed {
+  opacity: 0.35;
+}
+
+[data-quote].is-best {
+  opacity: 1;
+  transform: scale(1.5);
+  background-color: var(--c-green);
+}
+
+/*
+ * The convergence. The dots' own offsets are read once, before anything moves,
+ * and each dot is then handed the transform that takes it to the winner — the
+ * one beat in the demo where many elements move at once, and still only
+ * `transform` and `opacity`.
+ */
+[data-spread-track].is-converging [data-quote] {
+  transition:
+    transform var(--dur-converge) var(--ease-converge),
+    opacity var(--dur-scene) var(--ease-out);
+}
+
+/* ---- Scene 5: chat ------------------------------------------------------ */
+
+/*
+ * Bubbles rise slightly and fade. They never slide in from the side — an
+ * inbound message that flies in from the right is a chat animation, not a
+ * conversation.
+ */
+[data-chat-message],
+[data-chat-typing] {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--dur-reveal) var(--ease-out),
+    transform var(--dur-reveal) var(--ease-out);
+}
+
+[data-chat-message].is-in,
+[data-chat-typing].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * The indicator is replaced by the reply it stood in for: a cross-fade in
+ * place, over a footprint both share, so nothing below moves.
+ */
+[data-chat-typing].is-out {
+  opacity: 0;
+  transform: none;
+  transition: opacity var(--dur-chat-swap) var(--ease-out);
+}
+
+[data-chat-message='2'] {
+  transition:
+    opacity var(--dur-chat-swap) var(--ease-out),
+    transform var(--dur-chat-swap) var(--ease-out);
+}
+
+[data-chat-check] {
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity var(--dur-chat-swap) var(--ease-out),
+    transform var(--dur-chat-swap) var(--ease-land);
+}
+
+[data-chat-check].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Reduced motion ----------------------------------------------------- */
+
+/*
+ * The sequence does not play at all; the stage renders its resting frame in
+ * one go. The transitions are shortened rather than removed, so a state change
+ * triggered later still lands instead of appearing broken.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-stage] *,
+  [data-stage] {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

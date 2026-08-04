@@ -1,0 +1,211 @@
+/*
+ * Scene 1 — the search mini-form, as it appears at rest in all three auth
+ * nodes. Static: the stage is decorative, so nothing here is interactive and
+ * nothing carries a hover state.
+ */
+
+/*
+ * Figma strokes sit on the frame boundary rather than outside it, so a 16px
+ * Figma padding next to a 1px stroke is 15px of CSS padding. Every inset in
+ * this file is written as `figma - edge` so the outer sizes land on Figma's:
+ * card 624 x 176, fields row 66, filter row 58.
+ */
+
+.card {
+  --edge: 1px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: calc(16px - var(--edge));
+  border: var(--edge) solid var(--c-neutral-150);
+  border-radius: var(--r-card);
+  background: var(--c-neutral-white);
+  box-shadow: var(--shadow-card);
+  font-family: var(--font-stage);
+}
+
+/* ---- Destination / dates / submit -------------------------------------- */
+
+.fields {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.destination {
+  --edge: 1.5px;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(12px - var(--edge)) calc(16px - var(--edge));
+  border: var(--edge) solid var(--c-neutral-200);
+  border-radius: var(--r-control);
+  background: var(--c-neutral-white);
+  overflow: hidden;
+  opacity: 0.7;
+}
+
+.dates {
+  --edge: 1px;
+  flex: 0 0 196px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: calc(12px - var(--edge)) calc(16px - var(--edge));
+  border: var(--edge) solid var(--c-neutral-200);
+  border-radius: var(--r-control);
+  background: var(--c-neutral-white);
+}
+
+/*
+ * Focus is a border colour only — the width stays put, so taking and losing
+ * focus can never shift the text inside the field by half a pixel.
+ */
+.destination:global(.is-focused),
+.dates:global(.is-focused) {
+  border-color: var(--c-accent-soft);
+}
+
+.fieldText {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-block: 2px;
+}
+
+.fieldLabel {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--c-neutral-900);
+}
+
+/*
+ * The caret and the value share one row, so the caret sits wherever the text
+ * ends without anything having to measure it. `min-height` holds the row open
+ * while the value is empty, between the field taking focus and typing
+ * starting, so the field does not change height.
+ */
+.fieldValueRow {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  min-height: 18px;
+}
+
+.fieldValue {
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--c-neutral-900);
+  white-space: nowrap;
+}
+
+/* Placeholder styling, dropped on the first typed chunk. */
+.fieldValue[data-empty] {
+  color: var(--c-neutral-500);
+}
+
+.caret {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 18px;
+  border-radius: var(--r-control);
+  background: var(--c-accent-indicator);
+}
+
+.submit {
+  flex: 0 0 auto;
+  display: flex;
+  padding: 20px;
+  border-radius: var(--r-control);
+  background: var(--c-accent);
+}
+
+.submitIcon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submitIcon > img {
+  width: 19.2px;
+  height: 19.2px;
+}
+
+/* ---- Filters ----------------------------------------------------------- */
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filterLabel {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--c-neutral-900);
+}
+
+.toggleGroup {
+  --edge: 1px;
+  display: flex;
+  border: var(--edge) solid var(--c-neutral-150);
+  border-radius: var(--r-control);
+  overflow: hidden;
+}
+
+.toggle {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 7 + 20 + 7 + the group's two 1px edges = Figma's 36px row. */
+  padding: calc(8px - var(--edge)) 8px;
+  border-inline-end: var(--edge) solid var(--c-neutral-150);
+  background: var(--c-neutral-white);
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--c-neutral-900);
+}
+
+.toggle:last-child {
+  border-inline-end: 0;
+}
+
+/*
+ * Figma also steps the selected chip's line height from 20px to 22px, which
+ * would grow the whole card by 2px the moment a chip is picked. The weight
+ * change alone carries the state, so the line height stays where it is.
+ */
+.toggle:global(.is-selected) {
+  background: var(--c-purple-100);
+  border-inline-end-color: var(--c-neutral-250);
+  font-weight: 400;
+}
+
+/* Figma pins the first rating chip rather than letting it flex. */
+.toggleFixed {
+  flex: 0 0 47px;
+}

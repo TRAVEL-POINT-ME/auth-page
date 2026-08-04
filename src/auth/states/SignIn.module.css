@@ -1,0 +1,115 @@
+.heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 44px;
+  letter-spacing: -1.16px;
+  color: var(--c-text-strong);
+}
+
+.headingAccent {
+  color: var(--c-accent);
+}
+
+.headingPeriod {
+  color: var(--c-accent-period);
+}
+
+.lede {
+  width: 377px;
+  max-width: 100%;
+  margin-block-start: 13px;
+}
+
+.googleButton {
+  margin-block-start: 28px;
+}
+
+.googleIcon {
+  width: 17px;
+  height: 17px;
+}
+
+/* ---- "or" divider ------------------------------------------------------ */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-block-start: 20px;
+}
+
+.dividerRule {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 1px;
+  background: var(--c-border);
+}
+
+.dividerLabel {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--c-text-subtle);
+}
+
+/* ---- Form -------------------------------------------------------------- */
+
+.form {
+  margin-block-start: 20px;
+}
+
+/* The sign-in email field is taller and set larger than the sign-up fields. */
+.emailField {
+  height: 54px;
+  border-radius: var(--r-field-lg);
+  font-size: 16.5px;
+  letter-spacing: -0.198px;
+}
+
+.submit {
+  height: 52.5px;
+  margin-block-start: 14px;
+}
+
+.note {
+  margin-block-start: 13px;
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 18.75px;
+  text-align: center;
+  color: var(--c-text-muted);
+}
+
+/* ---- Sign-up prompt ---------------------------------------------------- */
+
+.prompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-start: 28px;
+  padding-block-start: 20px;
+  border-block-start: 1px solid var(--c-border);
+}
+
+.promptText {
+  font-weight: 400;
+  font-size: 13.5px;
+  line-height: 20.25px;
+  letter-spacing: -0.108px;
+  color: var(--c-text-muted);
+}
+
+.promptAction {
+  gap: 5px;
+  padding: 4px 2px;
+  font-weight: 600;
+  font-size: 13.5px;
+  line-height: 20.25px;
+  color: var(--c-accent);
+}
+
+.promptIcon {
+  width: 14px;
+  height: 14px;
+}

@@ -1,0 +1,77 @@
+/*
+ * The right-hand product demo.
+ *
+ * The stage has one fixed height, set to the tallest scene measured across all
+ * five at the narrowest supported width, and it never changes: swapping a
+ * scene can no more reflow the page than a cross-fade in a slideshow can. That
+ * is also why every scene is `position: absolute` — they are stacked, not
+ * stitched together.
+ *
+ * All of the motion lives in `motion.css`; this file only says where things go.
+ */
+
+.root {
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, var(--stage-w));
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: var(--stage-h);
+  /* `margin: auto` centres it without clipping on a short viewport. */
+  margin-block: auto;
+}
+
+/*
+ * Scenes are centred rather than pinned to the top, so a short scene sits where
+ * the eye already is instead of jumping upwards.
+ */
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Figma: card bottom 492 -> caption top 532. */
+  gap: 40px;
+}
+
+/* ---- Caption (scene 1) -------------------------------------------------- */
+
+.caption {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 38px;
+  letter-spacing: -0.51px;
+  text-align: center;
+  color: var(--c-neutral-900);
+}
+
+.captionMuted {
+  color: var(--c-neutral-500);
+}
+
+/* ---- The annotation under the stage ------------------------------------- */
+
+/*
+ * Sits at the foot of the panel, on the line the page's own Terms / Privacy
+ * links run along. `margin-block-start: auto` is what pushes it there, and it
+ * is also what leaves the stage centred in everything above it.
+ */
+.footnote {
+  flex: 0 0 auto;
+  margin-block-start: auto;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14.4px;
+  text-align: center;
+  color: var(--c-demo-label);
+}

@@ -1,0 +1,140 @@
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lede {
+  margin-block-start: 12px;
+  color: var(--c-neutral-600);
+}
+
+/* ---- Recipient row ----------------------------------------------------- */
+
+.recipient {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  margin-block-start: 22px;
+  padding: 11px 13px;
+  border-radius: var(--r-field);
+  background: var(--c-field-alt);
+}
+
+.recipientIcon {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+}
+
+.recipientAddress {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--c-neutral-900);
+}
+
+.change {
+  align-self: stretch;
+  justify-content: center;
+  padding: 4px 6px;
+  font-weight: 600;
+  font-size: 12.5px;
+  line-height: 18.75px;
+  color: var(--c-accent-strong);
+}
+
+/* ---- Code ------------------------------------------------------------- */
+
+.code {
+  display: flex;
+  gap: 8px;
+  margin-block-start: 20px;
+}
+
+.digit {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 56px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: var(--c-field-alt);
+  font-weight: 600;
+  font-size: 15px;
+  text-align: center;
+  color: var(--c-neutral-900);
+  transition:
+    border-color var(--dur-micro) var(--ease-out),
+    box-shadow var(--dur-micro) var(--ease-out);
+}
+
+/* Figma shows the first box already carrying the caret. */
+.digitActive {
+  border-radius: var(--r-field);
+  border-color: var(--c-accent);
+  background: var(--c-neutral-white);
+}
+
+.digit:focus {
+  outline: none;
+  border-radius: var(--r-field);
+  border-color: var(--c-accent);
+  background: var(--c-neutral-white);
+  box-shadow: 0 0 0 4px var(--c-focus-ring);
+}
+
+/* ---- Timers ------------------------------------------------------------ */
+
+.timers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-start: 14px;
+}
+
+.expiry {
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 18.75px;
+  color: var(--c-neutral-600);
+}
+
+.resend {
+  /* Figma draws no padding here; it is added for the hover reveal's hit area
+     and pulled straight back out so the row stays 19px tall. */
+  padding: 2px 6px;
+  margin: -2px -6px -2px 0;
+  font-weight: 500;
+  font-size: 12.5px;
+  line-height: 18.75px;
+  color: var(--c-text-resend);
+}
+
+.resend:disabled {
+  cursor: default;
+  background-color: transparent;
+}
+
+/* ---- Fallback ---------------------------------------------------------- */
+
+.fallback {
+  margin-block-start: 22px;
+  padding-block-start: 18px;
+  border-block-start: 1px solid var(--c-neutral-200);
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 20px;
+  color: var(--c-neutral-600);
+}
+
+.fallbackLink {
+  font-weight: 600;
+  color: var(--c-neutral-900);
+}
