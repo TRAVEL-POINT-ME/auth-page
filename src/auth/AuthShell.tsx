@@ -1,12 +1,14 @@
 import type { ReactNode } from 'react';
 
 import logoDot from '../assets/icons/logo-dot.svg';
-import { PresentationStage } from '../stage/PresentationStage';
 import styles from './AuthShell.module.css';
 
 /**
  * The frame every auth state shares: wordmark, the auth column slot, the
  * Terms / Privacy footer, and the grey presentation panel on the right.
+ *
+ * The panel is an empty slot: its geometry is fixed by the layout, its content
+ * is not built yet.
  */
 export function AuthShell({ children }: { children: ReactNode }) {
   return (
@@ -20,10 +22,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
             </span>
           </header>
 
-          {/* The demo stops for good if a field in here takes focus. */}
-          <main className={styles.zoneMain} data-auth-column>
-            {children}
-          </main>
+          <main className={styles.zoneMain}>{children}</main>
 
           <footer className={styles.zoneFooter}>
             <a className={styles.footerLink} href="#terms">
@@ -36,9 +35,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
         </div>
 
         <div className={styles.panel}>
-          <div className={styles.panelInner}>
-            <PresentationStage />
-          </div>
+          <div className={styles.panelInner} />
         </div>
       </div>
     </div>
