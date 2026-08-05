@@ -6,3 +6,8 @@ dist
 
 # Per-machine tool permissions, not shared.
 .claude/settings.local.json
+
+# Local AI-agent configuration and generated skill lockfile.
+.agents/
+.claude/skills/
+skills-lock.json
