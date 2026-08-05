@@ -2,7 +2,10 @@
 
 .switcher {
   position: absolute;
-  inset-inline: 0;
+  inset-inline-start: 0;
+  /* Keep the controls on the same centre line as the scenes when the grey
+     panel bleeds beyond the capped shell on wide viewports. */
+  inset-inline-end: calc(-1 * var(--map-bleed));
   /* Figma: row at y 828 of 903, 43 tall. */
   inset-block-end: 32px;
   z-index: 2;

@@ -48,17 +48,12 @@ export function LabelledGroup({
   );
 }
 
-type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
-  /** Renders the focused treatment Figma shows at rest on some fields. */
-  highlighted?: boolean;
-};
-
-export function TextField({ highlighted, className, ...props }: TextFieldProps) {
+export function TextField({
+  className,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement>) {
   return (
-    <input
-      {...props}
-      className={cx(styles.field, highlighted && styles.fieldFocused, className)}
-    />
+    <input {...props} className={cx(styles.field, className)} />
   );
 }
 

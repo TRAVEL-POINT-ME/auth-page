@@ -84,6 +84,9 @@
   --c-border: #e9e9ee; /* dividers, Google button border */
   --c-field: #f6f6f8; /* input fill (sign in / sign up) */
   --c-field-alt: #f7f5f8; /* input fill (2FA) */
+  --c-field-hover: #f2f2f5; /* a restrained step darker than the resting surface */
+  --c-field-placeholder: #6b6b76; /* 4.88:1 at rest, 4.71:1 on hover */
+  --c-field-focus-border: #7b7585; /* neutral 4.26:1 focus indicator */
   --c-focus-ring: rgba(225, 225, 227, 0.3);
 
   /* Hover reveal — the lightest neutral surface in the design. */
@@ -102,6 +105,9 @@
   --r-card: 16px; /* Figma variable: 2x */
   --r-panel-card: 20px; /* search form & notification cards in the panel */
   --r-round: 999px;
+
+  /* ---- Auth controls -------------------------------------------------- */
+  --auth-control-h: 48px;
 
   /* ---- Shadow ---------------------------------------------------------- */
   /* Figma style "Cards/Default" */
@@ -132,6 +138,7 @@
   /* The two tokens the auth column itself uses. */
   --dur-micro: 180ms;
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-field: cubic-bezier(0.15, 0.5, 0.5, 1);
 
   /* ---- Composition ----------------------------------------------------- */
   /*

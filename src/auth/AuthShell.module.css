@@ -16,6 +16,14 @@
  */
 
 .page {
+  /* Half of the space outside the capped 1440px composition. Global chrome
+     uses it to stay attached to the viewport while the main layout remains
+     centred. */
+  --shell-bleed: max(
+    0px,
+    (100vw - (var(--zone-w) + var(--panel-w))) / 2
+  );
+
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -51,6 +59,8 @@
 .zoneHeader,
 .zoneFooter {
   flex: 0 0 auto;
+  position: relative;
+  inset-inline-start: calc(-1 * var(--shell-bleed));
   padding-inline-start: var(--zone-pad-inline-start);
 }
 
@@ -137,9 +147,9 @@
 }
 
 /*
- * On ultrawide the composition stays centred and the panel colour — only the
- * colour — runs to the viewport's right edge. Panel content keeps its own
- * centring inside the 736px panel, so it never drifts.
+ * On ultrawide the composition stays centred and the panel colour runs to the
+ * viewport's right edge. PresentationPanel uses the same extension to centre
+ * its scenes in the whole visible grey region.
  */
 .panel::after {
   content: '';

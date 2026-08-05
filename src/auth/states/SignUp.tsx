@@ -44,7 +44,6 @@ export function SignUp({ onBack }: SignUpProps) {
               name="email"
               autoComplete="email"
               placeholder="name@travel-agency.com"
-              highlighted
             />
           </LabelledField>
 

@@ -1,7 +1,7 @@
 .intro {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
 }
 
 .lede {
@@ -15,9 +15,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 52px;
+  height: var(--auth-control-h);
   margin-block-start: 22px;
-  padding: 11px 13px;
+  padding: 9px 13px;
   border-radius: var(--r-field);
   background: var(--c-field-alt);
 }
@@ -61,7 +61,7 @@
 .digit {
   flex: 1 1 0;
   min-width: 0;
-  height: 56px;
+  height: var(--auth-control-h);
   padding: 0;
   border: 1px solid transparent;
   border-radius: 13px;
@@ -71,23 +71,21 @@
   text-align: center;
   color: var(--c-neutral-900);
   transition:
-    border-color var(--dur-micro) var(--ease-out),
-    box-shadow var(--dur-micro) var(--ease-out);
+    background-color var(--dur-micro) var(--ease-field),
+    border-color var(--dur-micro) var(--ease-out);
 }
 
-/* Figma shows the first box already carrying the caret. */
-.digitActive {
-  border-radius: var(--r-field);
-  border-color: var(--c-accent);
-  background: var(--c-neutral-white);
+@media (hover: hover) and (pointer: fine) {
+  .digit:hover:not(:focus) {
+    background-color: var(--c-field-hover);
+  }
 }
 
 .digit:focus {
   outline: none;
   border-radius: var(--r-field);
-  border-color: var(--c-accent);
-  background: var(--c-neutral-white);
-  box-shadow: 0 0 0 4px var(--c-focus-ring);
+  border-color: var(--c-field-focus-border);
+  background-color: var(--c-field-hover);
 }
 
 /* ---- Timers ------------------------------------------------------------ */

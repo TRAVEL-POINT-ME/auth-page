@@ -59,16 +59,14 @@
   margin-block-start: 20px;
 }
 
-/* The sign-in email field is taller and set larger than the sign-up fields. */
+/* Sign-in keeps the larger type treatment while sharing the control height. */
 .emailField {
-  height: 54px;
   border-radius: var(--r-field-lg);
   font-size: 16.5px;
   letter-spacing: -0.198px;
 }
 
 .submit {
-  height: 52.5px;
   margin-block-start: 14px;
 }
 

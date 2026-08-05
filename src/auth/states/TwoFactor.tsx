@@ -39,7 +39,7 @@ export function TwoFactor({ email, onBack, onChangeEmail }: TwoFactorProps) {
         {DIGITS.map((index) => (
           <input
             key={index}
-            className={cx(styles.digit, index === 0 && styles.digitActive)}
+            className={styles.digit}
             type="text"
             inputMode="numeric"
             autoComplete={index === 0 ? 'one-time-code' : 'off'}

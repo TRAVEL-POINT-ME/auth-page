@@ -126,13 +126,16 @@
 /* ---- Stage ------------------------------------------------------------- */
 
 /*
- * Centred on the panel itself, not on a padded box: Figma puts the search
- * form's optical centre at 452 of 903, i.e. dead centre, and the notification
- * stack that replaces it shares that centre.
+ * Centred in the whole visible grey region. At the reference width there is
+ * no bleed and this is the panel's own centre. On wider viewports the grey
+ * background continues to the right edge, so the centring box follows it by
+ * the same amount instead of staying tied to the capped shell.
  */
 .content {
   position: absolute;
-  inset: 0;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inset-inline-end: calc(-1 * var(--map-bleed));
   display: grid;
   place-items: center;
   padding-inline: var(--panel-gutter);

@@ -61,8 +61,8 @@
 
 .field {
   width: 100%;
-  height: 52px;
-  padding: 13px 14px;
+  height: var(--auth-control-h);
+  padding: 11px 14px;
   border: 1px solid transparent;
   border-radius: var(--r-field);
   background: var(--c-field);
@@ -71,26 +71,24 @@
   letter-spacing: -0.18px;
   color: var(--c-neutral-900);
   transition:
-    border-color var(--dur-micro) var(--ease-out),
-    box-shadow var(--dur-micro) var(--ease-out);
+    background-color var(--dur-micro) var(--ease-field),
+    border-color var(--dur-micro) var(--ease-out);
 }
 
 .field::placeholder {
-  color: var(--c-text-subtle);
+  color: var(--c-field-placeholder);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .field:hover:not(:focus) {
+    background-color: var(--c-field-hover);
+  }
 }
 
 .field:focus {
   outline: none;
-  border-color: var(--c-accent);
-  background: var(--c-neutral-white);
-  box-shadow: 0 0 0 4px var(--c-focus-ring);
-}
-
-/* The resting state Figma shows on the sign-up work-email field. */
-.fieldFocused {
-  border-color: var(--c-accent);
-  background: var(--c-neutral-white);
-  box-shadow: 0 0 0 4px var(--c-focus-ring);
+  border-color: var(--c-field-focus-border);
+  background-color: var(--c-field-hover);
 }
 
 /* ---- Buttons ----------------------------------------------------------- */
@@ -98,7 +96,7 @@
 .primaryButton {
   position: relative;
   width: 100%;
-  height: 52px;
+  height: var(--auth-control-h);
   border-radius: var(--r-field-lg);
   background: var(--c-text-strong);
   overflow: hidden;
@@ -133,7 +131,7 @@
   justify-content: center;
   gap: 9px;
   width: 100%;
-  height: 48px;
+  height: var(--auth-control-h);
   padding: 12px;
   border: 1px solid var(--c-border);
   border-radius: var(--r-field);
