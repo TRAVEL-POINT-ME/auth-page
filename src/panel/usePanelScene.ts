@@ -6,15 +6,23 @@ import {
   renderDiscoveryResting,
   resetDiscovery,
 } from './scenes/discovery.sequence';
+import {
+  playExpert,
+  renderExpertResting,
+  resetExpert,
+} from './scenes/expert.sequence';
+import type { SceneId } from './SceneSwitcher';
 import { Timeline } from './timeline';
 
 export type PanelControls = {
   paused: boolean;
   rate: number;
   finished: boolean;
+  scene: SceneId;
   toggle: () => void;
   restart: () => void;
   setRate: (rate: number) => void;
+  selectScene: (id: SceneId) => void;
 };
 
 /**
@@ -33,9 +41,14 @@ export function usePanelScene(rootRef: RefObject<HTMLDivElement | null>): PanelC
   const [paused, setPaused] = useState(false);
   const [rate, setRateState] = useState(1);
   const [finished, setFinished] = useState(false);
+  const [scene, setScene] = useState<SceneId>(1);
 
   const stopped = useRef(false);
   const onScreen = useRef(true);
+  const reduced = useRef(false);
+  /* Which scene a restart should replay — read inside callbacks that must not
+     be re-created every time the scene changes. */
+  const current = useRef<SceneId>(1);
 
   const hold = useCallback(() => {
     timeline.pause();
@@ -50,30 +63,48 @@ export function usePanelScene(rootRef: RefObject<HTMLDivElement | null>): PanelC
     setPaused(false);
   }, [timeline]);
 
-  const play = useCallback(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    timeline.reset();
-    setFinished(false);
-    setPaused(false);
-    resetDiscovery(root);
-    void playDiscovery(timeline, root).then((done) => {
-      if (done) setFinished(true);
-    });
-  }, [rootRef, timeline]);
+  /** Plays either scene from the top after winding both back to a clean frame. */
+  const play = useCallback(
+    (id: SceneId) => {
+      const root = rootRef.current;
+      if (!root) return;
+      current.current = id;
+      timeline.reset();
+      setPaused(false);
+      resetDiscovery(root);
+      resetExpert(root);
+      // Reduced motion gets the finished frame in one go, on a hand-picked
+      // scene exactly as on first load.
+      if (reduced.current) {
+        if (id === 1) renderDiscoveryResting(root);
+        else renderExpertResting(root);
+        setFinished(true);
+        return;
+      }
+      setFinished(false);
+      const sequence = id === 1 ? playDiscovery : playExpert;
+      void sequence(timeline, root).then((done) => {
+        if (done) setFinished(true);
+      });
+    },
+    [rootRef, timeline],
+  );
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
     // Reduced motion gets the finished frame in one go and never animates.
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // No gates are installed either: there is nothing running to gate.
+    reduced.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced.current) {
       renderDiscoveryResting(root);
+      resetExpert(root);
       setFinished(true);
       return;
     }
 
-    play();
+    play(1);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -123,7 +154,7 @@ export function usePanelScene(rootRef: RefObject<HTMLDivElement | null>): PanelC
 
   const restart = useCallback(() => {
     stopped.current = false;
-    play();
+    play(current.current);
   }, [play]);
 
   const setRate = useCallback(
@@ -134,5 +165,18 @@ export function usePanelScene(rootRef: RefObject<HTMLDivElement | null>): PanelC
     [timeline],
   );
 
-  return { paused, rate, finished, toggle, restart, setRate };
+  /*
+   * Picking a scene by hand clears the sign-in focus stop as well: someone who
+   * just clicked a pill is asking to watch it, whatever they were doing before.
+   */
+  const selectScene = useCallback(
+    (id: SceneId) => {
+      stopped.current = false;
+      setScene(id);
+      play(id);
+    },
+    [play],
+  );
+
+  return { paused, rate, finished, scene, toggle, restart, setRate, selectScene };
 }

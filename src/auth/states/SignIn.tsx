@@ -17,16 +17,17 @@ type SignInProps = {
 
 export function SignIn({ onRequestCode, onSignUp }: SignInProps) {
   return (
-    <section className={controlStyles.column}>
+    <section className={cx(controlStyles.column, styles.column)}>
       <h1 className={styles.heading}>
-        Booking platform for
+        Book at net.
         <br />
-        travel <span className={styles.headingAccent}>professionals</span>
-        <span className={styles.headingPeriod}>.</span>
+        Sell at <span className={styles.headingAccent}>your price</span>.
       </h1>
 
       <p className={cx(controlStyles.lede, styles.lede)}>
-        Search 2M+ properties worldwide, pay flexibly, and get expert support.
+        2M+ properties worldwide. Flexible payments.
+        <br />
+        Dedicated expert support.
       </p>
 
       <button
