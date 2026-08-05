@@ -1,0 +1,112 @@
+/*
+ * The panel's interior. Fills the grey panel exactly and clips to it, so the
+ * map can be scaled past 1 without spilling into the white zone.
+ *
+ * `overflow` lives here rather than on `.panel` on purpose: `.panel::after` is
+ * what bleeds the grey to the viewport edge on ultrawide, and clipping the
+ * panel itself would cut it off.
+ */
+
+/*
+ * `z-index` puts the panel interior above `.panel::after`, which is a plain
+ * positioned pseudo-element and would otherwise paint over the map — that is
+ * what left a flat grey strip down the right on ultrawide.
+ *
+ * `clip-path` rather than `overflow: hidden` because the clipping is
+ * one-sided: hard at the left, where the panel meets the white sign-in zone
+ * and a scaled-up map must not spill, but open to the right, where the panel's
+ * colour runs to the viewport edge and the map runs with it. A negative inset
+ * expands the clip region on that side only.
+ */
+.root {
+  /*
+   * How far the panel's colour runs past the composition on ultrawide: half
+   * the difference between the viewport and the 1440 shell, nothing below it.
+   * The map has to travel exactly this far — no further, or `object-fit: cover`
+   * would crop it to a much tighter zoom than the design.
+   */
+  --map-bleed: max(0px, (100vw - (var(--zone-w) + var(--panel-w))) / 2);
+
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  clip-path: inset(0 calc(-1 * var(--map-bleed)) 0 0);
+}
+
+/* ---- Map --------------------------------------------------------------- */
+
+/*
+ * The treatment, applied to the layer rather than baked into the asset, so a
+ * different map inherits it: the image gives up only in the far corners, where
+ * a hard rectangle against the grey would otherwise show. The mask transforms
+ * with the layer, so it zooms along with the map.
+ *
+ * Deliberately gentle. The current asset already carries its own edge fade,
+ * and stacking a strong vignette on top of it washed the roads out to nothing.
+ * This one is a backstop for assets that have no fade of their own, not a
+ * second helping of the same effect.
+ */
+/*
+ * `multiply` is what makes the asset swappable. The export has an opaque
+ * near-white background, which sitting on the grey panel washed the middle of
+ * it out to almost white. Multiplying drops white to nothing and keeps only
+ * the strokes, so the map reads as drawn *on* the panel rather than pasted
+ * over it — and any other light-background map inherits the same treatment
+ * without being re-cut.
+ */
+.mapLayer {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  /* Runs into the ultrawide bleed with the panel colour, so the map fills the
+     whole right-hand block rather than stopping at the 736px composition. */
+  inset-inline-end: calc(-1 * var(--map-bleed));
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: radial-gradient(145% 115% at 50% 46%, #000 72%, transparent 100%);
+  mask-image: radial-gradient(145% 115% at 50% 46%, #000 72%, transparent 100%);
+}
+
+.mapImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Matches the map's transform-origin, so the crop and the zoom agree on
+     which part of the map the scene is about. */
+  object-position: 50% 46%;
+}
+
+/* ---- Stage ------------------------------------------------------------- */
+
+/*
+ * Centred on the panel itself, not on a padded box: Figma puts the search
+ * form's optical centre at 452 of 903, i.e. dead centre, and the notification
+ * stack that replaces it shares that centre.
+ */
+.content {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-inline: var(--panel-gutter);
+}
+
+/*
+ * Fixed height — the taller of the search form (178) and the notification
+ * stack (220). Swapping the stage's contents can never reflow the sign-in
+ * column beside it.
+ */
+.stage {
+  position: relative;
+  width: 100%;
+  max-width: var(--panel-content-w);
+  height: var(--stage-h);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

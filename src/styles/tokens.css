@@ -29,6 +29,10 @@
   --c-accent-period: #635bff; /* the full stop after "professionals" */
   --c-accent-strong: #6e48c6; /* Figma variable: Purple/Purple 600 — "Change" */
   --c-accent-indicator: #5d35b2; /* Figma variable: Purple/Purple 700 */
+  --c-accent-soft: #9a7ae3; /* focused field border in the presentation panel */
+
+  /* ---- Colour: presentation panel -------------------------------------- */
+  --c-pin: #ff4965; /* map pin fill */
 
   /* ---- Colour: neutrals bound to Figma variables ----------------------- */
   --c-neutral-900: #0d0122;
@@ -63,6 +67,7 @@
   --r-field: 14px;
   --r-field-lg: 15px;
   --r-card: 16px; /* Figma variable: 2x */
+  --r-panel-card: 20px; /* search form & notification cards in the panel */
   --r-round: 999px;
 
   /* ---- Shadow ---------------------------------------------------------- */
@@ -84,6 +89,19 @@
   --panel-w: 736px;
   --panel-gutter: 24px; /* floor for that 56px inset once the panel narrows */
   --panel-min-w: 576px; /* where the panel stops shrinking (see the 1120 step) */
+
+  /*
+   * The panel's presentation stage. Figma frame 736 x 903: the search form is
+   * 600 x 178 at x 68 (centred), the notification stack 402 x 220 — both
+   * sharing an optical centre of 368 / 452, i.e. the panel's own centre. The
+   * stage takes the taller of the two so swapping content can never reflow.
+   */
+  --panel-content-w: 600px;
+  --stage-h: 220px;
+  --panel-map-ratio: 736 / 903; /* the map's natural aspect, for the cover box */
+  --notif-w: 402px;
+  --notif-h: 68px;
+  --notif-gap: 8px;
 
   --zone-w: 704px; /* white zone: frame left edge -> panel */
   --zone-pad-inline-start: 40px; /* logo & footer inset */
