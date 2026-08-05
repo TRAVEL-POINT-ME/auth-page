@@ -68,7 +68,7 @@ export function PresentationPanel() {
 
       <SceneSwitcher scene={controls.scene} onSelect={controls.selectScene} />
 
-      {import.meta.env.DEV && <StageControls {...controls} />}
+      <StageControls {...controls} />
     </div>
   );
 }
