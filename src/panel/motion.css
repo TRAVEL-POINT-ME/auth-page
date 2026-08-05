@@ -43,6 +43,16 @@
   animation: panel-caret 1s step-end infinite;
 }
 
+/*
+ * Solid while the hands are moving. A real caret suppresses its blink as you
+ * type and only restarts it once you stop — one of the small tells that
+ * separates typing from an animation of typing.
+ */
+[data-caret].is-typing {
+  animation: none;
+  opacity: 1;
+}
+
 @keyframes panel-caret {
   from {
     opacity: 1;
@@ -62,6 +72,25 @@
   background-color: var(--c-purple-100);
   border-inline-end-color: var(--c-neutral-250);
   font-weight: 400;
+}
+
+/*
+ * The tap. The label is what moves — the chip itself shares a border with its
+ * neighbour, and shrinking the box would pull that seam apart.
+ *
+ * Asymmetric on purpose: 110ms straight down under the finger, then back up
+ * through `easeOutBack`, which carries it a couple of percent past its resting
+ * size before it settles. That overshoot is the whole difference between a chip
+ * that was pressed and a chip whose background simply changed colour.
+ */
+[data-chip-label] {
+  transition: transform var(--dur-chip-up) var(--ease-stage-back);
+}
+
+[data-chip].is-pressed [data-chip-label] {
+  transform: scale(0.88);
+  transition-duration: var(--dur-chip-down);
+  transition-timing-function: var(--ease-stage-out);
 }
 
 [data-submit] {
@@ -94,17 +123,23 @@
 /* ---- Scene 1: the map -------------------------------------------------- */
 
 /*
- * Three lengths on three properties, all starting together: the fade is done
- * at 500ms, the blur at 600ms, and the scale keeps easing to rest until
- * 1100ms. That trailing settle is the whole "iOS zoom" read.
+ * Three lengths on three properties, all starting together, and the gaps
+ * between them are the whole effect: the fade is done at 540ms, the blur at
+ * 420ms, and the scale keeps easing to rest until 1500ms.
+ *
+ * The blur is the one that has to finish first. It clears while the map still
+ * has a fifth of its travel left, so what the viewer watches is a full second
+ * of a sharp map coming down to size — the zoom is the thing being shown, and a
+ * zoom that happens behind a blur is a fade with extra steps. That is also why
+ * the blur is only 6px: enough to soften the arrival, not enough to hide it.
  *
  * The origin is the centroid of the pins rather than the box centre, so the
  * map converges on the part of itself the scene is about to populate.
  */
 [data-map] {
   opacity: 0;
-  transform: scale(1.14);
-  filter: blur(10px);
+  transform: scale(1.22);
+  filter: blur(6px);
   transform-origin: 50% 46%;
   will-change: transform, opacity, filter;
   transition:
@@ -119,6 +154,263 @@
   filter: blur(0);
 }
 
+/* ---- Scene 1: the pins ------------------------------------------------- */
+
+/*
+ * Six one-shot landings fired by a single class, with the stagger carried by
+ * `animation-delay` rather than by six scheduled beats. Keyframes rather than
+ * transitions is the right call precisely because this never gets interrupted:
+ * it plays once per run, and it runs off the main thread.
+ *
+ * `--pin-beat` is a fractional multiple of the stagger, not an index: the gaps
+ * between landings are uneven, so six pins arriving read as answers coming back
+ * rather than as a metronome.
+ *
+ * The origin is the point of the pin, not the middle of the icon — so the
+ * squash on the 70% frame happens where the pin meets the ground.
+ */
+[data-pin] {
+  opacity: 0;
+  transform-origin: 50% 100%;
+}
+
+/*
+ * The ripple. Centred on the same point via `translate`, which is a separate
+ * property from `transform` and so does not fight the `scale` the keyframes
+ * animate. `forwards` rather than `both`: during its delay the ring has to stay
+ * at the element's own opacity 0, not at the keyframe's opening 0.5, or a
+ * static ring would sit on the map waiting for its pin.
+ */
+[data-pin]::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-end: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  translate: -50% 50%;
+  border: 2px solid var(--c-pin);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+[data-pins].is-in [data-pin] {
+  animation: panel-pin-drop var(--dur-pin-drop) var(--ease-stage-out) both;
+  animation-delay: calc(var(--pin-beat) * var(--dur-pin-stagger));
+}
+
+/*
+ * The pins as a still: what reduced motion and the resting frame get. A
+ * separate state rather than the same animation collapsed to nothing, because
+ * an animation is exactly what must not run here — leaning on its fill mode
+ * would make the finished frame depend on the animation having been given a
+ * frame to play, and there are conditions under which it is not.
+ */
+[data-pins].is-rest [data-pin] {
+  opacity: 1;
+}
+
+/* Delayed to 70% of the drop — the frame the pin actually touches down on. */
+[data-pins].is-in [data-pin]::after {
+  animation: panel-pin-ripple var(--dur-pin-ripple) ease-out forwards;
+  animation-delay: calc(
+    var(--pin-beat) * var(--dur-pin-stagger) + var(--dur-pin-drop) * 0.7
+  );
+}
+
+@keyframes panel-pin-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-22px) scale(0.7);
+  }
+  55% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(0) scale(1.06, 0.92); /* squash, on impact */
+  }
+  85% {
+    transform: translateY(0) scale(0.98, 1.03); /* and the stretch back */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes panel-pin-ripple {
+  from {
+    opacity: 0.5;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+/* ---- Scene 1: the search status pill ----------------------------------- */
+
+/*
+ * The pill holds the centre between the form dissolving and the stack
+ * assembling — the beat where the map is filling in and there would otherwise
+ * be nothing to read.
+ *
+ * It comes up rather than down: the map is arriving underneath it, and a pill
+ * rising off that surface belongs to it. It leaves the same way it came, which
+ * is what makes the notification stack look like the thing that replaced it.
+ */
+[data-search] {
+  opacity: 0;
+  transform: translateY(10px) scale(0.94);
+  transition:
+    opacity var(--dur-status-out) var(--ease-stage-out),
+    transform var(--dur-status-out) var(--ease-stage-out);
+}
+
+[data-search].is-in {
+  opacity: 1;
+  transform: none;
+  transition-duration: var(--dur-status-in);
+}
+
+/*
+ * The two labels cross-fade in place. Only opacity moves — they are stacked in
+ * one grid cell, so neither can shift the other, and the pill's width is the
+ * width of the longer of them at every moment.
+ */
+[data-search-label] {
+  transition: opacity var(--dur-status-swap) var(--ease-stage-out);
+}
+
+[data-search-label='found'] {
+  opacity: 0;
+}
+
+[data-search].is-found [data-search-label='searching'] {
+  opacity: 0;
+}
+
+[data-search].is-found [data-search-label='found'] {
+  opacity: 1;
+}
+
+/*
+ * The shimmer runs only while the pill is up and still searching. Keyframes
+ * rather than a transition because it is a loop, `linear` because a sweep that
+ * eases reads as a thing being animated rather than as light passing over.
+ */
+[data-search].is-in:not(.is-found) [data-search-label='searching'] {
+  animation: panel-status-shimmer var(--dur-shimmer) linear infinite;
+}
+
+@keyframes panel-status-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
+/* ---- Scene 1: the notification stack ----------------------------------- */
+
+/*
+ * Two elements per card so two transforms never share a property. The slot owns
+ * where the card sits in the stack and is written to directly from the
+ * sequence; the card owns its entrance. Both are transitions, not keyframes, so
+ * a restart mid-flight retargets from wherever the stack currently is instead
+ * of snapping back to the start.
+ *
+ * The two are deliberately out of phase: the sequence moves the slots first and
+ * only then lets the new card in (`MOTION.stackLead`). The gap opens, and the
+ * card falls into a space that is already there. Firing both on the same frame
+ * is what made this read as stacking on top rather than pushing down.
+ */
+[data-slot] {
+  transition: transform var(--dur-stack-shift) var(--ease-stage-move);
+}
+
+/*
+ * Entering from clearly smaller and clearly higher: at 0.96 the card was
+ * already close enough to its final size that the entrance barely registered
+ * against the stack moving under it.
+ */
+[data-card] {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.9);
+  transition:
+    opacity var(--dur-card-in) var(--ease-stage-out),
+    transform var(--dur-card-in) var(--ease-stage-out);
+}
+
+[data-card].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Scene 2: support conversation ------------------------------------ */
+
+/*
+ * The slots reserve the final conversation geometry from the first frame, so
+ * a new message never reflows the 560px card. Transitions are used because a
+ * tab can be selected again mid-flight: they retarget from the current frame
+ * instead of restarting a keyframe from zero.
+ */
+[data-expert-slot],
+[data-expert-message],
+[data-expert-typing] {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--dur-expert-message) var(--ease-stage-out),
+    transform var(--dur-expert-message) var(--ease-stage-out);
+}
+
+[data-expert-slot].is-in,
+[data-expert-message].is-in,
+[data-expert-typing].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * A loop is the one place keyframes are correct here. The dots animate only
+ * while a typing state is mounted, use transform/opacity exclusively, and are
+ * phased by one of the existing motion tokens rather than three JS timers.
+ */
+[data-expert-typing].is-in i {
+  animation: panel-expert-typing var(--dur-expert-typing) var(--ease-stage-move)
+    infinite;
+}
+
+[data-expert-typing].is-in i:nth-child(2) {
+  animation-delay: var(--dur-expert-typing-stagger);
+}
+
+[data-expert-typing].is-in i:nth-child(3) {
+  animation-delay: calc(var(--dur-expert-typing-stagger) * 2);
+}
+
+/* Timeline pauses also freeze CSS loops; otherwise the three dots would keep
+   moving after a real auth field had permanently stopped the demo. */
+[data-panel][data-paused] [data-expert-typing] i {
+  animation-play-state: paused;
+}
+
+@keyframes panel-expert-typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0) scale(0.85);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1);
+  }
+}
+
 /* ---- Reduced motion ---------------------------------------------------- */
 
 /*
@@ -129,9 +421,14 @@
  */
 @media (prefers-reduced-motion: reduce) {
   [data-panel],
-  [data-panel] * {
+  [data-panel] *,
+  [data-panel] *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* Delays have to go too, or the pins' 130ms stagger would still walk them
+       onto the map over most of a second. */
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
   }
 }

@@ -1,3 +1,7 @@
+.column {
+  --col-w: var(--col-w-wide);
+}
+
 .heading {
   font-family: var(--font-display);
   font-weight: 700;
@@ -11,12 +15,8 @@
   color: var(--c-accent);
 }
 
-.headingPeriod {
-  color: var(--c-accent-period);
-}
-
 .lede {
-  width: 377px;
+  width: 350px;
   max-width: 100%;
   margin-block-start: 13px;
 }
@@ -94,7 +94,7 @@
 
 .promptText {
   font-weight: 400;
-  font-size: 13.5px;
+  font-size: 14px;
   line-height: 20.25px;
   letter-spacing: -0.108px;
   color: var(--c-text-muted);
@@ -104,7 +104,7 @@
   gap: 5px;
   padding: 4px 2px;
   font-weight: 600;
-  font-size: 13.5px;
+  font-size: 14px;
   line-height: 20.25px;
   color: var(--c-accent);
 }

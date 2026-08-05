@@ -11,6 +11,24 @@
  * card 600 x 178, fields row 66, filter row 60.
  */
 
+/* ---- Stage layers ------------------------------------------------------ */
+
+/*
+ * The form, the status pill and the stack occupy the same box and are centred
+ * the same way, so each one materialises on exactly the spot the last one
+ * dissolved from. Only one of them is ever visible; none is ever laid out in
+ * relation to another.
+ */
+.formLayer,
+.statusLayer,
+.stackLayer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .form {
   --edge: 1px;
   width: 100%;
@@ -34,9 +52,10 @@
 }
 
 /*
- * Figma keeps this field at 70% while the rest of the card is at full
- * strength, and the design's focused frame is dimmed too — so this is the
- * field's look, not a state. Focus changes the border colour only.
+ * Figma keeps this field at 70% while the rest of the card is at full strength.
+ * That dim is not reproduced: it lands on the typed value as well, and a city
+ * someone just typed has to read as entered text — black, like the dates beside
+ * it — not as a hint. Focus changes the border colour only.
  */
 .destination {
   --edge: 1.5px;
@@ -50,7 +69,6 @@
   border-radius: var(--r-control);
   background: var(--c-neutral-white);
   overflow: hidden;
-  opacity: 0.7;
 }
 
 .dates {
@@ -80,9 +98,10 @@
   padding-block: 2px;
 }
 
+/* Inter Medium 13/16 — the type in both fields was restepped in Figma. */
 .fieldLabel {
-  font-weight: 400;
-  font-size: 12px;
+  font-weight: 500;
+  font-size: 13px;
   line-height: 16px;
   color: var(--c-neutral-900);
 }
@@ -100,9 +119,11 @@
   min-height: 18px;
 }
 
+/* Inter Medium 14/18. The line height is what the field's 66px is built on and
+   has not moved, so the restep costs no height. */
 .fieldValue {
-  font-weight: 300;
-  font-size: 13px;
+  font-weight: 500;
+  font-size: 14px;
   line-height: 18px;
   color: var(--c-neutral-900);
   white-space: nowrap;
@@ -196,6 +217,14 @@
 }
 
 /*
+ * What the press scales. A block of its own so the transform has something to
+ * sit on that is not the chip: see the note in `DiscoveryScene.tsx`.
+ */
+.toggleLabel {
+  display: block;
+}
+
+/*
  * Figma also steps the picked chip's line height from 20px to 22px, which
  * would grow the card by 2px the moment a chip is picked — and the sign-in
  * column sits right beside it. The background and weight carry the state, so
@@ -205,4 +234,210 @@
 /* Figma pins the first rating chip rather than letting it flex. */
 .toggleFixed {
   flex: 0 0 47px;
+}
+
+/* ---- Search status pill (Figma 20770:951) ------------------------------ */
+
+/*
+ * Figma's frame is 217 x 46: a 34px row inset by 3px sideways and 5px
+ * vertically. The width is not written down — the pill is exactly as wide as
+ * its label, and `.statusBox` below is what makes that width the same for both
+ * labels.
+ */
+.status {
+  display: flex;
+  padding: 5px 3px;
+  border: 1px solid var(--c-status-edge);
+  border-radius: 70px;
+  background: var(--c-status-surface);
+  backdrop-filter: blur(5px);
+  box-shadow: var(--shadow-status);
+  font-family: var(--font-body);
+  will-change: transform, opacity;
+}
+
+/*
+ * Both labels are laid into the same grid cell, so the box is always as wide as
+ * the longer of the two and the cross-fade cannot change the pill's width. The
+ * two strings happen to set within a few pixels of each other, which is what
+ * makes this read as one pill changing its mind rather than a box resizing.
+ */
+.statusBox {
+  display: grid;
+  place-items: center;
+  height: 34px;
+  padding-inline: 15px;
+}
+
+/* Inter Medium 14/15.6, and Figma's own `#6b6b76` — which is `--c-text-muted`
+   exactly. The pill states what the panel is doing; it is not a heading. */
+.statusLabel {
+  grid-area: 1 / 1;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 15.6px;
+  letter-spacing: -0.0762px;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+}
+
+/*
+ * The shimmer, the way ChatGPT does it: the text is its own colour and a
+ * lighter band sweeps through it, clipped to the glyphs. Painted with a
+ * gradient rather than an overlay so it can never spill outside the letters.
+ *
+ * Only the "searching" label carries it. The result that replaces it is a
+ * fact, and a fact that keeps sweeping reads as still loading.
+ */
+.statusShimmer {
+  background-image: linear-gradient(
+    100deg,
+    var(--c-text-muted) 42%,
+    var(--c-neutral-900) 50%,
+    var(--c-text-muted) 58%
+  );
+  background-repeat: no-repeat;
+  /* Wider than the box, so the band is off-screen at both ends of the sweep. */
+  background-size: 260% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* ---- Notification stack ------------------------------------------------ */
+
+/*
+ * Exactly three cards and two gaps tall, which is the stage's height — the
+ * finished stack fills it, and every slot inside is absolutely positioned, so
+ * cards arriving cannot push the box around.
+ */
+.stack {
+  position: relative;
+  width: 100%;
+  max-width: var(--notif-w);
+  height: calc(3 * var(--notif-h) + 2 * var(--notif-gap));
+}
+
+.slot {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  height: var(--notif-h);
+  will-change: transform;
+}
+
+/*
+ * Figma's padding here sits inside the stroke: 13 + 20 + 20 + 13 + two 1px
+ * edges is the 68 the stack is built on. No `- edge` correction, unlike the
+ * search form above, where the stroke is on the frame boundary.
+ */
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  height: 100%;
+  padding: 13px 15px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-panel-card);
+  background: var(--c-notif-surface);
+  backdrop-filter: blur(7px);
+  box-shadow: var(--shadow-notif);
+  font-family: var(--font-body);
+  will-change: transform, opacity;
+}
+
+.cardFront {
+  background: var(--c-neutral-white);
+  backdrop-filter: none;
+  box-shadow: var(--shadow-notif-front);
+}
+
+.cardIcon {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--tray);
+}
+
+/* The asset is exported at the tile's own size with the glyph already inset,
+   so it fills the tile and nothing has to be centred by hand. */
+.cardIcon > img {
+  width: 100%;
+  height: 100%;
+}
+
+.cardBody {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+}
+
+.cardDot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--tint);
+}
+
+.cardTitle {
+  font-weight: 600;
+  font-size: 13.5px;
+  line-height: 20.25px;
+  letter-spacing: -0.2025px;
+  color: var(--c-text-strong);
+  white-space: nowrap;
+}
+
+/*
+ * Clipped rather than wrapped: the card's height is load-bearing — it is what
+ * the stack's 76px step is built from — so a long line has to give, not the box.
+ */
+.cardDetail {
+  height: 20px;
+  padding-block-start: 1px;
+  overflow: hidden;
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 18.75px;
+  letter-spacing: -0.1px;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cardTime {
+  flex: 0 0 auto;
+  padding-block-start: 1px;
+  font-weight: 400;
+  font-size: 11.5px;
+  line-height: 17.25px;
+  color: var(--c-text-subtle);
+  white-space: nowrap;
+}
+
+/* ---- Pins -------------------------------------------------------------- */
+
+.pins {
+  position: absolute;
+  inset: 0;
+}
+
+.pin {
+  position: absolute;
+  display: block;
+}
+
+.pinArt {
+  width: 100%;
+  height: 100%;
 }

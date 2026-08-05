@@ -36,23 +36,15 @@
 /* ---- Map --------------------------------------------------------------- */
 
 /*
- * The treatment, applied to the layer rather than baked into the asset, so a
- * different map inherits it: the image gives up only in the far corners, where
- * a hard rectangle against the grey would otherwise show. The mask transforms
- * with the layer, so it zooms along with the map.
+ * The map goes down exactly as exported — its own background included. It is
+ * already the panel's colour: the asset's flat ground is (242, 242, 244)
+ * against `--c-panel` (242, 242, 245), so the image simply continues the panel
+ * and the two never have to be reconciled. Nothing is blended or knocked out
+ * here; the only edge treatment is `.mapVeil` below, which is the vignette the
+ * design specifies.
  *
- * Deliberately gentle. The current asset already carries its own edge fade,
- * and stacking a strong vignette on top of it washed the roads out to nothing.
- * This one is a backstop for assets that have no fade of their own, not a
- * second helping of the same effect.
- */
-/*
- * `multiply` is what makes the asset swappable. The export has an opaque
- * near-white background, which sitting on the grey panel washed the middle of
- * it out to almost white. Multiplying drops white to nothing and keeps only
- * the strokes, so the map reads as drawn *on* the panel rather than pasted
- * over it — and any other light-background map inherits the same treatment
- * without being re-cut.
+ * Split in two on purpose: this layer is static and owns the bleed, `.mapZoom`
+ * inside it owns everything the sequence animates.
  */
 .mapLayer {
   position: absolute;
@@ -62,18 +54,73 @@
      whole right-hand block rather than stopping at the 736px composition. */
   inset-inline-end: calc(-1 * var(--map-bleed));
   pointer-events: none;
-  mix-blend-mode: multiply;
-  -webkit-mask-image: radial-gradient(145% 115% at 50% 46%, #000 72%, transparent 100%);
-  mask-image: radial-gradient(145% 115% at 50% 46%, #000 72%, transparent 100%);
+}
+
+/*
+ * `container-type: size` so the cover box below can be sized from the layer's
+ * own height without either of them being measured in JS.
+ */
+.mapZoom {
+  position: absolute;
+  inset: 0;
+  container-type: size;
+}
+
+/*
+ * `object-fit: cover` as a real box, because the pins live in it.
+ *
+ * A cropped `<img>` gives the pins nothing to be positioned against: a
+ * percentage of the element is not a percentage of the visible image once the
+ * crop bites. Sizing the box to the asset's own ratio — at least as wide as the
+ * layer, and at least as wide as covering its height requires — reproduces
+ * `cover` exactly, and a pin at a percentage of it stays on its road at every
+ * viewport shape.
+ *
+ * `left`/`top` plus a matching negative `translate` is `object-position:
+ * 50% 46%`, the same framing the zoom converges on.
+ */
+.mapBox {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 46%;
+  translate: -50% -46%;
+  width: max(100cqw, calc(100cqh * var(--panel-map-w) / var(--panel-map-h)));
+  aspect-ratio: var(--panel-map-w) / var(--panel-map-h);
 }
 
 .mapImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* Matches the map's transform-origin, so the crop and the zoom agree on
-     which part of the map the scene is about. */
-  object-position: 50% 46%;
+}
+
+/*
+ * The vignette, taken verbatim from the map node in Figma (20763:360990): a
+ * touch of the accent in the middle, nothing at all until 74%, and the panel's
+ * own colour at 80% by the time it reaches the sides.
+ *
+ * This is what keeps the panel reading as its own block once the map is up.
+ * Before it arrives, the grey panel and the white sign-in zone are two flat
+ * fields with a clean seam; a map running edge to edge would carry strokes
+ * right up to that seam and the two zones would start to read as one surface.
+ * The wash puts the panel's colour back at the edges without touching the
+ * middle.
+ *
+ * Its own layer rather than baked into the asset, so a different map inherits
+ * it — and outside `.mapZoom`, so it holds still while the map settles behind
+ * it instead of breathing with the zoom.
+ */
+.mapVeil {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inset-inline-end: calc(-1 * var(--map-bleed));
+  pointer-events: none;
+  background: radial-gradient(
+    49.95% 49.95% at 50% 50.05%,
+    rgba(106, 76, 226, 0.03) 0%,
+    rgba(var(--c-panel-rgb), 0) 74.04%,
+    rgba(var(--c-panel-rgb), 0.8) 100%
+  );
 }
 
 /* ---- Stage ------------------------------------------------------------- */
@@ -103,10 +150,8 @@
   height: var(--stage-h);
 }
 
+/* Scenes own their own layout inside the stage — this only stacks them. */
 .scene {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }

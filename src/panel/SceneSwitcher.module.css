@@ -1,0 +1,193 @@
+/* The two Figma states: discovery 20762:1163, expert 20767:1199. */
+
+.switcher {
+  position: absolute;
+  inset-inline: 0;
+  /* Figma: row at y 828 of 903, 43 tall. */
+  inset-block-end: 32px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+}
+
+.track {
+  --pill-second-scale: 0.9577464789; /* 204 / 213 */
+
+  position: relative;
+  width: 402px;
+  height: 44px;
+  border-radius: 70px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.item {
+  position: absolute;
+  inset-block-start: 5px;
+  z-index: 1;
+  height: 34px;
+  padding: 0;
+  border-radius: var(--r-round);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 15.6px;
+  letter-spacing: -0.0762px;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+  transform: scale(1);
+  transition: transform var(--dur-press-up) var(--ease-stage-out);
+}
+
+.item[aria-pressed='true'] {
+  color: var(--c-neutral-900);
+}
+
+.first {
+  inset-inline-start: 3px;
+  width: 188px;
+}
+
+.first[aria-pressed='true'] {
+  width: 213px;
+}
+
+.second {
+  inset-inline-end: 3px;
+  width: 179px;
+}
+
+.second[aria-pressed='true'] {
+  width: 204px;
+}
+
+.item:active {
+  transform: scale(0.97);
+  transition-duration: var(--dur-press-down);
+}
+
+.item:focus-visible {
+  outline: 1px solid var(--c-accent);
+  outline-offset: 1px;
+  box-shadow: 0 0 0 4px var(--c-focus-ring);
+}
+
+.label {
+  position: absolute;
+  inset-block-start: 9px;
+  height: 16px;
+  text-align: left;
+  transition: transform var(--dur-pill) var(--ease-stage-move);
+}
+
+.first .label {
+  inset-inline-start: 15px;
+  width: 158px;
+  transform: translateX(0);
+}
+
+.first[aria-pressed='true'] .label {
+  transform: translateX(24px);
+}
+
+.second .label {
+  inset-inline-end: 15px;
+  width: 149px;
+  transform: translateX(0);
+}
+
+.second[aria-pressed='true'] .label {
+  transform: translateX(-1px);
+}
+
+.iconSlot {
+  position: absolute;
+  inset-block-start: 10.5px;
+  inset-inline-start: 16px;
+  width: 17px;
+  height: 13px;
+  opacity: 0;
+  transform: scale(0.9);
+  transform-origin: center;
+  transition:
+    opacity var(--dur-micro) var(--ease-stage-out),
+    transform var(--dur-micro) var(--ease-stage-out);
+  pointer-events: none;
+}
+
+.item[aria-pressed='true'] .iconSlot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/*
+ * The second button is right-anchored: it moves 25px to the right when it
+ * becomes inactive (204px -> 179px). Counter that layout step while its icon
+ * fades, so the glyph stays at the same screen coordinate instead of jumping
+ * right just before it disappears.
+ */
+.second:not([aria-pressed='true']) .iconSlot {
+  inset-inline-start: -9px; /* inactive x 220 - 9 = active x 195 + 16 */
+}
+
+.icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.indicator {
+  position: absolute;
+  inset-block-start: 5px;
+  inset-inline-start: 3px;
+  z-index: 0;
+  width: 213px;
+  height: 34px;
+  transform: translateX(0) scaleX(1);
+  transform-origin: left center;
+  transition: transform var(--dur-pill) var(--ease-stage-move);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.track[data-active-scene='2'] .indicator {
+  transform: translateX(192px) scaleX(var(--pill-second-scale));
+}
+
+.indicatorSurface {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-round);
+  background: var(--c-neutral-white);
+  transform: scale(1);
+  transition: transform var(--dur-press-up) var(--ease-stage-out);
+}
+
+/* The surface and its content compress together when the active tab is held. */
+.item[aria-pressed='true']:active ~ .indicator .indicatorSurface {
+  transform: scale(0.97);
+  transition-duration: var(--dur-press-down);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .item:not([aria-pressed='true']):hover {
+    background: var(--c-hover-veil);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track .item,
+  .track .label,
+  .track .iconSlot,
+  .track .indicator,
+  .track .indicatorSurface {
+    transition: none !important;
+  }
+
+  .track .item:active,
+  .item[aria-pressed='true']:active ~ .indicator .indicatorSurface {
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,260 @@
+.scene {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  width: var(--expert-w);
+  height: var(--expert-h);
+  transform: translate(-50%, -50%);
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  overflow: hidden;
+  border-radius: var(--r-panel-card);
+  background: var(--c-neutral-white);
+  box-shadow: var(--shadow-expert-card);
+  color: var(--c-expert-ink);
+  font-family: var(--font-body);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  height: 29px;
+  padding-block-end: 12px;
+  border-block-end: 1px solid var(--c-expert-border);
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: normal;
+  color: var(--c-expert-header);
+  white-space: nowrap;
+}
+
+.booking {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--c-expert-ink);
+}
+
+.separator {
+  font-size: 13px;
+  color: var(--c-expert-meta-soft);
+}
+
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  height: 414px;
+  padding-block-start: 14px;
+}
+
+.agentRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-block-start: 2px;
+  border-radius: 15px;
+  background: var(--c-expert-avatar-surface);
+  font-weight: 600;
+  font-size: 11px;
+  line-height: normal;
+  color: var(--c-expert-avatar);
+}
+
+.primaryAgentContent,
+.secondaryAgentContent {
+  position: relative;
+}
+
+.primaryAgentContent {
+  width: 474px;
+  height: 89px;
+}
+
+.secondaryAgentContent {
+  width: 399px;
+  height: 66px;
+}
+
+.primaryAgentBubble,
+.secondaryAgentBubble {
+  padding: 12px 16px;
+  border-radius: 12px 12px 12px 6px;
+  background: var(--c-expert-bubble);
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.primaryAgentBubble {
+  width: 474px;
+  height: 68px;
+  line-height: 22px;
+}
+
+.secondaryAgentBubble {
+  width: 399px;
+  height: 45px;
+  line-height: 20.3px;
+  color: var(--c-expert-copy);
+  white-space: nowrap;
+}
+
+.messageMeta {
+  height: 21px;
+  padding-block-start: 6px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: var(--c-expert-meta);
+  white-space: nowrap;
+}
+
+.guestRow,
+.thanksRow {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.guestRow {
+  height: 68px;
+}
+
+.guestBubble {
+  width: 455px;
+  height: 68px;
+  padding: 12px 16px;
+  border-radius: 16px 16px 6px;
+  background: var(--c-expert-ink);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--c-text-inverse);
+}
+
+.statusSlot {
+  position: relative;
+  width: 100%;
+  height: 67px;
+}
+
+.statusCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 67px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--c-neutral-white);
+  box-shadow: var(--shadow-expert-status);
+}
+
+.statusIconTray {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-round);
+  background: var(--c-expert-success-surface);
+}
+
+.statusIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.statusCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.statusTitle {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16.8px;
+  color: var(--c-expert-ink);
+  white-space: nowrap;
+}
+
+.statusTitle strong {
+  font-weight: 500;
+  color: var(--c-expert-success);
+}
+
+.statusMeta {
+  padding-block-start: 5px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16.2px;
+  color: var(--c-expert-meta);
+  white-space: nowrap;
+}
+
+.thanksRow {
+  height: 46px;
+}
+
+.thanksBubble {
+  width: 117px;
+  height: 46px;
+  padding: 12px 15px;
+  border-radius: 16px 16px 6px;
+  background: var(--c-expert-ink);
+  font-weight: 400;
+  font-size: 14.5px;
+  line-height: 21.025px;
+  color: var(--c-text-inverse);
+  white-space: nowrap;
+}
+
+.typingPosition,
+.resolutionTyping {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
+
+.resolutionTyping {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.typingBubble {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 52px;
+  height: 36px;
+  border-radius: 12px 12px 12px 6px;
+  background: var(--c-expert-bubble);
+}
+
+.typingBubble i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c-expert-meta);
+}
