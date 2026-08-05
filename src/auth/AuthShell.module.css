@@ -68,6 +68,7 @@
   flex: 1 1 auto;
   display: flex;
   justify-content: flex-end;
+  view-transition-name: auth-flow;
   /*
    * Figma centres the column on the frame (y 451.5). The bands above (66px) and
    * below (53px) are uneven, so 13px of tail padding puts the optical centre
@@ -80,6 +81,95 @@
    viewport scrolls instead of being clipped at the top. */
 .zoneMain > * {
   margin-block: auto;
+}
+
+/*
+ * Only the auth region participates. Excluding the root keeps the animated map
+ * live instead of freezing the whole page into a transition snapshot.
+ */
+:root {
+  view-transition-name: none;
+}
+
+::view-transition-group(auth-flow),
+::view-transition-old(auth-flow),
+::view-transition-new(auth-flow) {
+  animation-duration: var(--dur-micro);
+  animation-timing-function: var(--ease-out);
+  animation-fill-mode: both;
+}
+
+::view-transition-old(auth-flow),
+::view-transition-new(auth-flow) {
+  mix-blend-mode: normal;
+}
+
+:root[data-auth-direction='forward']::view-transition-old(auth-flow) {
+  animation-name: auth-exit-left;
+}
+
+:root[data-auth-direction='forward']::view-transition-new(auth-flow) {
+  animation-name: auth-enter-right;
+}
+
+:root[data-auth-direction='backward']::view-transition-old(auth-flow) {
+  animation-name: auth-exit-right;
+}
+
+:root[data-auth-direction='backward']::view-transition-new(auth-flow) {
+  animation-name: auth-enter-left;
+}
+
+@keyframes auth-exit-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-2%);
+  }
+}
+
+@keyframes auth-enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(2%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes auth-exit-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(2%);
+  }
+}
+
+@keyframes auth-enter-left {
+  from {
+    opacity: 0;
+    transform: translateX(-2%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(auth-flow),
+  ::view-transition-old(auth-flow),
+  ::view-transition-new(auth-flow) {
+    animation: none;
+  }
 }
 
 /* ---- Logo -------------------------------------------------------------- */
