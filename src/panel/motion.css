@@ -1,0 +1,137 @@
+/*
+ * Every animated state in the presentation panel, keyed on `data-*` hooks that
+ * the scene markup carries and the sequence toggles classes on. Scene
+ * components stay static JSX; nothing in here is written by React.
+ *
+ * Only `opacity`, `transform` and `filter` are animated. Nothing transitions
+ * `height`, `width`, `top`, `left`, `margin` or `padding` — that is what lets
+ * the stage hold a fixed height while its contents change, so the sign-in form
+ * beside it can never be reflowed by the demo.
+ */
+
+/* ---- Scene cross-fade -------------------------------------------------- */
+
+[data-scene] {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-scene) var(--ease-stage-out);
+}
+
+[data-scene].is-active {
+  opacity: 1;
+}
+
+/* ---- Scene 1: the search form ------------------------------------------ */
+
+/*
+ * Focus is a border colour only. The width stays put, so taking focus can
+ * never shift the text inside the field by half a pixel.
+ */
+[data-field] {
+  transition: border-color var(--dur-micro) var(--ease-stage-out);
+}
+
+[data-field].is-focused {
+  border-color: var(--c-accent-soft);
+}
+
+[data-caret] {
+  opacity: 0;
+}
+
+[data-caret].is-on {
+  animation: panel-caret 1s step-end infinite;
+}
+
+@keyframes panel-caret {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+[data-chip] {
+  transition:
+    background-color var(--dur-micro) var(--ease-stage-out),
+    border-color var(--dur-micro) var(--ease-stage-out);
+}
+
+[data-chip].is-selected {
+  background-color: var(--c-purple-100);
+  border-inline-end-color: var(--c-neutral-250);
+  font-weight: 400;
+}
+
+[data-submit] {
+  transition: transform var(--dur-press-up) var(--ease-stage-out);
+}
+
+[data-submit].is-pressed {
+  transform: scale(0.94);
+  transition-duration: var(--dur-press-down);
+}
+
+/*
+ * The form dissolving. Blur is what makes this read as one object receding
+ * rather than two objects crossfading past each other — see the map below,
+ * which comes forward through the same 180ms of overlap.
+ */
+[data-form] {
+  transition:
+    opacity var(--dur-form-out) var(--ease-stage-out),
+    transform var(--dur-form-out) var(--ease-stage-out),
+    filter var(--dur-form-out) var(--ease-stage-out);
+}
+
+[data-form].is-out {
+  opacity: 0;
+  transform: scale(0.97);
+  filter: blur(6px);
+}
+
+/* ---- Scene 1: the map -------------------------------------------------- */
+
+/*
+ * Three lengths on three properties, all starting together: the fade is done
+ * at 500ms, the blur at 600ms, and the scale keeps easing to rest until
+ * 1100ms. That trailing settle is the whole "iOS zoom" read.
+ *
+ * The origin is the centroid of the pins rather than the box centre, so the
+ * map converges on the part of itself the scene is about to populate.
+ */
+[data-map] {
+  opacity: 0;
+  transform: scale(1.14);
+  filter: blur(10px);
+  transform-origin: 50% 46%;
+  will-change: transform, opacity, filter;
+  transition:
+    opacity var(--dur-map-fade) var(--ease-stage-out),
+    transform var(--dur-map-scale) var(--ease-stage-map),
+    filter var(--dur-map-blur) var(--ease-stage-out);
+}
+
+[data-map].is-in {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+/* ---- Reduced motion ---------------------------------------------------- */
+
+/*
+ * The sequence does not run at all — `usePanelScene` paints the resting frame
+ * in one go. Durations are collapsed rather than removed so that a state
+ * change triggered later (switching scenes by hand) still lands instead of
+ * looking broken.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-panel],
+  [data-panel] * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

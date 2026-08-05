@@ -152,17 +152,14 @@
 }
 
 /*
- * The panel's content slot — empty for now. It centres whatever is dropped in
- * and holds the design's insets: 55px top / 34px bottom, and an inline gutter
- * that is only a floor, since the real 56px inset comes from centring a 624px
- * content area in the 736px panel.
+ * The panel's content is `PresentationPanel`, which fills this box absolutely
+ * and owns its own clipping — see `PresentationPanel.module.css`. Nothing is
+ * clipped here, because `.panel::after` above is what carries the colour to the
+ * viewport edge and would be cut off by it.
+ *
+ * The panel takes its height from the flex row: `.zone` is `min-height: 100vh`
+ * and the row stretches, so the panel matches the white zone exactly.
  */
-.panelInner {
-  display: flex;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 55px var(--panel-gutter) var(--zone-pad-bottom);
-}
 
 /* ---- Responsive -------------------------------------------------------- */
 
